@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ookini | Café de Especialidad & Repostería</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            iron: {
+              900: '#121212',
+              800: '#1C1C1E',
+              700: '#2A2A2E',
+              600: '#3A3A40',
+              500: '#5A5A62',
+              300: '#A0A0AA',
+              100: '#E4E4E8',
+            },
+            rust: {
+              500: '#D96B27',
+              600: '#B85317',
+              700: '#8C3B0E'
+            },
+            bronze: '#C59B27'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #121212;
+      color: #E4E4E8;
+      font-family: 'Inter', sans-serif;
+    }
+    .industrial-border {
+      border: 1px solid #3A3A40;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    }
+    .iron-gradient {
+      background: linear-gradient(145deg, #1C1C1E 0%, #121212 100%);
+    }
+    .rust-text-glow {
+      text-shadow: 0 0 12px rgba(217, 107, 39, 0.4);
+    }
+    .plate-texture {
+      background-image: radial-gradient(#2a2a2e 10%, transparent 11%);
+      background-size: 12px 12px;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121212;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3A3A40;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D96B27;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-rust-500 selection:text-white">
+
+  <header class="sticky top-0 z-40 bg-iron-900/90 backdrop-blur-md border-b border-iron-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-iron-800 border border-rust-500 rounded flex items-center justify-center group-hover:bg-rust-500 transition-colors duration-300">
+          <i class="fa-solid font-bold fa-mug-hot text-rust-500 group-hover:text-iron-900 text-lg"></i>
+        </div>
+        <div>
+          <span class="text-2xl font-extrabold tracking-widest text-white uppercase font-mono block">OOKINI</span>
+          <span class="text-[10px] tracking-widest uppercase text-rust-500 block font-sans -mt-1" id="sub-logo">Specialty Coffee & Bakery</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium uppercase tracking-wider text-iron-300">
+        <a href="#about" class="hover:text-rust-500 transition-colors" data-i18n="nav-about">Nuestra Historia</a>
+        <a href="#menu" class="hover:text-rust-500 transition-colors" data-i18n="nav-menu">Menú Digital</a>
+        <a href="#location" class="hover:text-rust-500 transition-colors" data-i18n="nav-location">Ubicación</a>
+      </nav>
+
+      <!-- Action Controls (Cart & Language Switcher) -->
+      <div class="flex items-center gap-4">
+        <!-- Language Switcher -->
+        <button id="lang-toggle" onclick="toggleLanguage()" class="px-3 py-1.5 rounded border border-iron-600 bg-iron-800 text-xs font-mono font-bold hover:border-rust-500 transition-all flex items-center gap-2">
+          <i class="fa-solid fa-globe text-rust-500"></i>
+          <span id="lang-text">EN</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button onclick="toggleCartModal()" class="relative p-2.5 rounded bg-rust-500 text-iron-900 font-bold hover:bg-rust-600 transition-colors">
+          <i class="fa-solid fa-cart-shopping text-lg"></i>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-iron-900 text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow">0</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button onclick="toggleMobileNav()" class="md:hidden p-2 text-iron-300 hover:text-white">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Bar -->
+    <div id="mobile-nav" class="hidden md:hidden border-t border-iron-700 bg-iron-900 px-4 py-4 space-y-3">
+      <a href="#about" onclick="toggleMobileNav()" class="block text-iron-300 hover:text-rust-500 font-medium" data-i18n="nav-about">Nuestra Historia</a>
+      <a href="#menu" onclick="toggleMobileNav()" class="block text-iron-300 hover:text-rust-500 font-medium" data-i18n="nav-menu">Menú Digital</a>
+      <a href="#location" onclick="toggleMobileNav()" class="block text-iron-300 hover:text-rust-500 font-medium" data-i18n="nav-location">Ubicación</a>
+    </div>
+  </header>
+
+  <section class="relative py-20 lg:py-28 overflow-hidden plate-texture border-b border-iron-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-iron-800 border border-rust-500/50 text-rust-500 text-xs font-mono uppercase tracking-widest mb-6">
+            <i class="fa-solid fa-mountain text-xs"></i>
+            <span data-i18n="hero-badge">Paz de Río, Boyacá</span>
+          </div>
+          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white uppercase font-sans leading-none mb-6">
+            <span data-i18n="hero-title1">Fuerza Mineral,</span><br>
+            <span class="text-rust-500 rust-text-glow" data-i18n="hero-title2">Esencia de Origen</span>
+          </h1>
+          <p class="text-iron-300 text-lg leading-relaxed mb-8 max-w-xl" data-i18n="hero-desc">
+            Forjado entre las montañas mineras y agrícolas de Boyacá. Café de especialidad de altura y pastelería artesanal servidos en un ambiente industrial único.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="#menu" class="px-6 py-3.5 rounded bg-rust-500 hover:bg-rust-600 text-iron-900 font-bold uppercase text-sm tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-rust-500/20">
+              <i class="fa-solid fa-utensils"></i>
+              <span data-i18n="hero-btn-menu">Ver Menú & Pedir</span>
+            </a>
+            <a href="#about" class="px-6 py-3.5 rounded border border-iron-600 bg-iron-800/80 hover:bg-iron-700 text-white font-medium uppercase text-sm tracking-wider transition-all flex items-center gap-2">
+              <span data-i18n="hero-btn-story">Nuestra Historia</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Featured Visual Card -->
+        <div class="relative">
+          <div class="absolute -inset-1 rounded-lg bg-gradient-to-r from-rust-500 to-iron-600 opacity-30 blur-lg"></div>
+          <div class="relative rounded-lg bg-iron-800 p-6 border border-iron-600 shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=1000&auto=format&fit=crop" alt="Specialty Coffee" class="rounded w-full h-80 object-cover border border-iron-700 mb-6 filter brightness-90 contrast-110">
+            <div class="grid grid-cols-3 gap-4 text-center divide-x divide-iron-700">
+              <div>
+                <span class="text-rust-500 text-2xl font-bold font-mono block">2,200m</span>
+                <span class="text-xs text-iron-300 uppercase tracking-wider" data-i18n="stat-altitude">Altitud</span>
+              </div>
+              <div>
+                <span class="text-rust-500 text-2xl font-bold font-mono block">100%</span>
+                <span class="text-xs text-iron-300 uppercase tracking-wider" data-i18n="stat-origin">Arábica</span>
+              </div>
+              <div>
+                <span class="text-rust-500 text-2xl font-bold font-mono block">Handcrafted</span>
+                <span class="text-xs text-iron-300 uppercase tracking-wider" data-i18n="stat-bakery">Repostería</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="py-20 bg-iron-900 border-b border-iron-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mx-auto text-center mb-16">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-rust-500 mb-2" data-i18n="story-subtitle">Identidad & Raíces</h2>
+        <h3 class="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white" data-i18n="story-title">De la Mina y el Campo a la Taza</h3>
+        <div class="w-16 h-1 bg-rust-500 mx-auto mt-4 rounded"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <!-- Story text -->
+        <div class="space-y-6 text-iron-300 text-base leading-relaxed">
+          <p data-i18n="story-p1">
+            <strong>Ookini</strong> nace en el corazón de <strong>Paz de Río, Boyacá</strong>, un territorio mítico donde la fuerza de la minería de hierro y carbón convergen con la riqueza fértil de la agricultura de montaña.
+          </p>
+          <p data-i18n="story-p2">
+            Nuestro nombre evoca gratitud y respeto ("Ookini" - *muchas gracias*). Rendimos homenaje a los trabajadores del mineral y a los caficultores locales seleccionando únicamente granos de especialidad tostados con la precisión y el carácter del metal forjado.
+          </p>
+          <div class="p-4 rounded border-l-4 border-rust-500 bg-iron-800 italic text-white">
+            <span data-i18n="story-quote">"Combinamos el carácter robusto de nuestra tierra industrial con la sutileza de los sabores de la alta repostería."</span>
+          </div>
+        </div>
+
+        <!-- Visual representation -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-4">
+            <div class="p-6 rounded bg-iron-800 border border-iron-700 text-center">
+              <i class="fa-solid fa-pickaxe text-3xl text-rust-500 mb-3"></i>
+              <h4 class="font-bold text-white uppercase text-sm mb-1" data-i18n="pillar1-title">Tradición Minera</h4>
+              <p class="text-xs text-iron-300" data-i18n="pillar1-desc">Carácter industrial, fuerza y temple boyacense.</p>
+            </div>
+            <div class="p-6 rounded bg-iron-800 border border-iron-700 text-center">
+              <i class="fa-solid fa-wheat-awn text-3xl text-bronze mb-3"></i>
+              <h4 class="font-bold text-white uppercase text-sm mb-1" data-i18n="pillar2-title">Agricultura Fértil</h4>
+              <p class="text-xs text-iron-300" data-i18n="pillar2-desc">Tierras ricas en minerales a gran altura.</p>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-full p-6 rounded bg-iron-800 border border-rust-500/40 text-center shadow-xl">
+              <i class="fa-solid fa-bread-slice text-4xl text-rust-500 mb-3"></i>
+              <h4 class="font-bold text-white uppercase text-sm mb-1" data-i18n="pillar3-title">Pastelería de Autor</h4>
+              <p class="text-xs text-iron-300" data-i18n="pillar3-desc">Horneado fresco diario con ingredientes locales.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu" class="py-20 bg-iron-800 plate-texture border-b border-iron-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div>
+          <h2 class="text-xs font-mono uppercase tracking-widest text-rust-500 mb-2" data-i18n="menu-subtitle">Menú de Especialidad</h2>
+          <h3 class="text-3xl sm:text-4xl font-extrabold uppercase text-white" data-i18n="menu-title">Selección & Precios</h3>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap gap-2 mt-6 md:mt-0" id="category-filters">
+          <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border border-rust-500 bg-rust-500 text-iron-900 transition-all" data-cat="all" data-i18n="filter-all">Todos</button>
+          <button onclick="filterCategory('coffee')" class="cat-btn px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border border-iron-600 bg-iron-900 text-iron-300 hover:border-rust-500 transition-all" data-cat="coffee" data-i18n="filter-coffee">Café de Especialidad</button>
+          <button onclick="filterCategory('pastry')" class="cat-btn px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border border-iron-600 bg-iron-900 text-iron-300 hover:border-rust-500 transition-all" data-cat="pastry" data-i18n="filter-pastry">Pastelería & Repostería</button>
+          <button onclick="filterCategory('beans')" class="cat-btn px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border border-iron-600 bg-iron-900 text-iron-300 hover:border-rust-500 transition-all" data-cat="beans" data-i18n="filter-beans">Café en Bolsa</button>
+        </div>
+      </div>
+
+      <!-- Menu Grid -->
+      <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+
+    </div>
+  </section>
+
+  <section id="location" class="py-20 bg-iron-900 border-b border-iron-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        
+        <!-- Info Card -->
+        <div class="bg-iron-800 p-8 rounded-lg border border-iron-700 flex flex-col justify-between">
+          <div>
+            <h2 class="text-xs font-mono uppercase tracking-widest text-rust-500 mb-2" data-i18n="loc-subtitle">Visítanos</h2>
+            <h3 class="text-3xl font-extrabold uppercase text-white mb-6" data-i18n="loc-title">Ubicación & Horarios</h3>
+            
+            <div class="space-y-6 text-iron-300">
+              <div class="flex items-start gap-4">
+                <div class="p-3 bg-iron-900 rounded border border-iron-700 text-rust-500">
+                  <i class="fa-solid fa-location-dot text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white uppercase text-sm" data-i18n="loc-address-title">Dirección</h4>
+                  <p class="text-sm">Paz de Río, Boyacá - Colombia</p>
+                  <p class="text-xs text-iron-400" data-i18n="loc-address-detail">Zona Centro / Cercano a Estación Principal</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="p-3 bg-iron-900 rounded border border-iron-700 text-rust-500">
+                  <i class="fa-solid fa-clock text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white uppercase text-sm" data-i18n="loc-hours-title">Horario de Atención</h4>
+                  <p class="text-sm font-mono text-rust-500 font-bold">Lunes a Domingo: 9:00 AM - 7:00 PM</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4">
+                <div class="p-3 bg-iron-900 rounded border border-iron-700 text-rust-500">
+                  <i class="fa-solid fa-phone text-xl"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white uppercase text-sm" data-i18n="loc-contact-title">Contacto Directo</h4>
+                  <p class="text-sm font-mono">+57 312 000 0000</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Media Links -->
+          <div class="mt-8 pt-6 border-t border-iron-700">
+            <h4 class="font-bold text-white uppercase text-xs tracking-wider mb-4" data-i18n="social-title">Síguenos en Redes Sociales</h4>
+            <div class="flex items-center gap-4">
+              <a href="https://instagram.com" target="_blank" rel="noopener" class="p-3 rounded bg-iron-900 text-iron-300 hover:text-rust-500 hover:border-rust-500 border border-iron-700 transition-colors flex items-center gap-2 text-sm font-bold">
+                <i class="fa-brands fa-instagram text-lg"></i> Instagram
+              </a>
+              <a href="https://facebook.com" target="_blank" rel="noopener" class="p-3 rounded bg-iron-900 text-iron-300 hover:text-rust-500 hover:border-rust-500 border border-iron-700 transition-colors flex items-center gap-2 text-sm font-bold">
+                <i class="fa-brands fa-facebook text-lg"></i> Facebook
+              </a>
+              <a href="https://wa.me/573120000000" target="_blank" rel="noopener" class="p-3 rounded bg-iron-900 text-iron-300 hover:text-rust-500 hover:border-rust-500 border border-iron-700 transition-colors flex items-center gap-2 text-sm font-bold">
+                <i class="fa-brands fa-whatsapp text-lg text-emerald-500"></i> WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulated Map / Location Preview -->
+        <div class="rounded-lg border border-iron-700 bg-iron-800 p-2 overflow-hidden flex flex-col justify-center items-center text-center relative min-h-[300px]">
+          <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center filter grayscale opacity-30"></div>
+          <div class="relative z-10 p-6 bg-iron-900/90 rounded border border-iron-700 max-w-sm">
+            <i class="fa-solid fa-map-location-dot text-4xl text-rust-500 mb-3"></i>
+            <h4 class="font-bold text-white uppercase mb-1">Paz de Río, Boyacá</h4>
+            <p class="text-xs text-iron-300 mb-4" data-i18n="map-prompt">Visítanos en nuestro local de diseño industrial en el centro del municipio.</p>
+            <a href="https://maps.google.com/?q=Paz+de+Rio+Boyaca" target="_blank" rel="noopener" class="inline-block px-4 py-2 rounded bg-rust-500 hover:bg-rust-600 text-iron-900 text-xs font-bold uppercase tracking-wider">
+              <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Google Maps
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div id="cart-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-end">
+    <div class="bg-iron-900 w-full max-w-md h-full p-6 border-l border-iron-700 flex flex-col justify-between overflow-y-auto">
+      
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-iron-700">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-basket-shopping text-rust-500 text-xl"></i>
+            <h3 class="font-bold text-lg uppercase text-white" data-i18n="cart-title">Tu Pedido Online</h3>
+          </div>
+          <button onclick="toggleCartModal()" class="text-iron-400 hover:text-white text-xl">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Items Container -->
+        <div id="cart-items-list" class="py-4 space-y-4">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <!-- Checkout Form & Total -->
+      <div class="border-t border-iron-700 pt-4 space-y-4">
+        
+        <!-- Table / Delivery notes -->
+        <div>
+          <label class="block text-xs font-mono uppercase text-iron-300 mb-1" data-i18n="cart-notes-label">Notas o Mesa / Dirección</label>
+          <input type="text" id="order-notes" placeholder="Ej: Mesa 4 o Dirección en Paz de Río" class="w-full bg-iron-800 border border-iron-700 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-rust-500">
+        </div>
+
+        <div class="flex items-center justify-between text-lg font-extrabold uppercase">
+          <span data-i18n="cart-total">Total:</span>
+          <span id="cart-total-price" class="text-rust-500 font-mono">$0 COP</span>
+        </div>
+
+        <button onclick="sendWhatsAppOrder()" class="w-full py-3.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 shadow-lg">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span data-i18n="cart-btn-whatsapp">Enviar Pedido por WhatsApp</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="bg-iron-900 py-8 border-t border-iron-800 text-xs text-iron-500 text-center">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="font-mono uppercase tracking-widest text-iron-400">OOKINI SPECIALTY COFFEE & BAKERY &copy; 2026</p>
+      <p class="mt-1" data-i18n="footer-location">Paz de Río, Boyacá - Colombia</p>
+    </div>
+  </footer>
+
+  <script>
+    // --- Application State ---
+    let currentLang = 'es';
+    let currentCategory = 'all';
+    let cart = [];
+
+    // --- Menu Data ---
+    const menuData = [
+      {
+        id: 'c1',
+        category: 'coffee',
+        nameEs: 'Espresso Mineral',
+        nameEn: 'Mineral Espresso',
+        descEs: 'Extracción doble concentrada, notas a chocolate amargo y caramelo tostado.',
+        descEn: 'Double shot extraction, notes of dark chocolate & toasted caramel.',
+        price: 5500,
+        img: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?q=80&w=400&fit=crop'
+      },
+      {
+        id: 'c2',
+        category: 'coffee',
+        nameEs: 'Capuchino Forjado',
+        nameEn: 'Forged Cappuccino',
+        descEs: 'Espresso de altura con leche cremada al vapor y toque de cacao boyacense.',
+        descEn: 'High-altitude espresso with steamed silky milk and a dusting of local cocoa.',
+        price: 7500,
+        img: 'https://images.unsplash.com/photo-1534778101976-62847782c213?q=80&w=400&fit=crop'
+      },
+      {
+        id: 'c3',
+        category: 'coffee',
+        nameEs: 'V60 Métodos Filtrados',
+        nameEn: 'V60 Pour Over',
+        descEs: 'Café de variedad Castillo/Caturra producido a 2,200m. Perfil limpio y frutal.',
+        descEn: 'Castillo/Caturra single origin coffee grown at 2,200m. Clean, fruity cup profile.',
+        price: 8500,
+        img: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=400&fit=crop'
+      },
+      {
+        id: 'p1',
+        category: 'pastry',
+        nameEs: 'Croissant de Hierro y Mantequilla',
+        nameEn: 'Iron Butter Croissant',
+        descEs: 'Masa hojaldrada artesanal horneada cada mañana en nuestro horno de piedra.',
+        descEn: 'Handcrafted flaky puff pastry baked fresh every morning in stone oven.',
+        price: 6500,
+        img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=400&fit=crop'
+      },
+      {
+        id: 'p2',
+        category: 'pastry',
+        nameEs: 'Tarta de Queso & Frutos Rojos',
+        nameEn: 'Red Berry Cheesecake',
+        descEs: 'Pastelería de autor estilo Vasco con mermelada artesanal de la región.',
+        descEn: 'Artisanal Basque-style cheesecake topped with house-made regional berry jam.',
+        price: 9500,
+        img: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?q=80&w=400&fit=crop'
+      },
+      {
+        id: 'b1',
+        category: 'beans',
+        nameEs: 'Bolsa Café Ookini 250g (En Grano / Molido)',
+        nameEn: 'Ookini Coffee Bag 250g (Whole / Ground)',
+        descEs: 'Origen Paz de Río. Tueste medio ideal para filtrados y espresso.',
+        descEn: 'Origin: Paz de Río. Medium roast ideal for pour-overs and espresso.',
+        price: 28000,
+        img: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=400&fit=crop'
+      }
+    ];
+
+    // --- Translations Dictionary ---
+    const i18n = {
+      es: {
+        'nav-about': 'Nuestra Historia',
+        'nav-menu': 'Menú Digital',
+        'nav-location': 'Ubicación',
+        'hero-badge': 'Paz de Río, Boyacá',
+        'hero-title1': 'Fuerza Mineral,',
+        'hero-title2': 'Esencia de Origen',
+        'hero-desc': 'Forjado entre las montañas mineras y agrícolas de Boyacá. Café de especialidad de altura y pastelería artesanal servidos en un ambiente industrial único.',
+        'hero-btn-menu': 'Ver Menú & Pedir',
+        'hero-btn-story': 'Nuestra Historia',
+        'stat-altitude': 'Altitud',
+        'stat-origin': 'Arábica',
+        'stat-bakery': 'Repostería',
+        'story-subtitle': 'Identidad & Raíces',
+        'story-title': 'De la Mina y el Campo a la Taza',
+        'story-p1': '<strong>Ookini</strong> nace en el corazón de <strong>Paz de Río, Boyacá</strong>, un territorio mítico donde la fuerza de la minería de hierro y carbón convergen con la riqueza fértil de la agricultura de montaña.',
+        'story-p2': 'Nuestro nombre evoca gratitud y respeto ("Ookini" - *muchas gracias*). Rendimos homenaje a los trabajadores del mineral y a los caficultores locales seleccionando únicamente granos de especialidad tostados con la precisión del metal forjado.',
+        'story-quote': '"Combinamos el carácter robusto de nuestra tierra industrial con la sutileza de los sabores de la alta repostería."',
+        'pillar1-title': 'Tradición Minera',
+        'pillar1-desc': 'Carácter industrial, fuerza y temple boyacense.',
+        'pillar2-title': 'Agricultura Fértil',
+        'pillar2-desc': 'Tierras ricas en minerales a gran altura.',
+        'pillar3-title': 'Pastelería de Autor',
+        'pillar3-desc': 'Horneado fresco diario con ingredientes locales.',
+        'menu-subtitle': 'Menú de Especialidad',
+        'menu-title': 'Selección & Precios',
+        'filter-all': 'Todos',
+        'filter-coffee': 'Café de Especialidad',
+        'filter-pastry': 'Pastelería & Repostería',
+        'filter-beans': 'Café en Bolsa',
+        'loc-subtitle': 'Visítanos',
+        'loc-title': 'Ubicación & Horarios',
+        'loc-address-title': 'Dirección',
+        'loc-address-detail': 'Zona Centro / Paz de Río, Boyacá',
+        'loc-hours-title': 'Horario de Atención',
+        'loc-contact-title': 'Contacto Directo',
+        'social-title': 'Síguenos en Redes Sociales',
+        'map-prompt': 'Visítanos en nuestro local de diseño industrial en el centro del municipio.',
+        'cart-title': 'Tu Pedido Online',
+        'cart-notes-label': 'Notas o Mesa / Dirección',
+        'cart-total': 'Total:',
+        'cart-btn-whatsapp': 'Enviar Pedido por WhatsApp',
+        'footer-location': 'Paz de Río, Boyacá - Colombia',
+        'add-to-cart': 'Agregar al Pedido'
+      },
+      en: {
+        'nav-about': 'Our Story',
+        'nav-menu': 'Digital Menu',
+        'nav-location': 'Location',
+        'hero-badge': 'Paz de Río, Boyacá',
+        'hero-title1': 'Mineral Strength,',
+        'hero-title2': 'Origin Essence',
+        'hero-desc': 'Forged between the mining and agricultural mountains of Boyacá. High-altitude specialty coffee and artisanal bakery served in a unique industrial space.',
+        'hero-btn-menu': 'View Menu & Order',
+        'hero-btn-story': 'Our Story',
+        'stat-altitude': 'Altitude',
+        'stat-origin': 'Arabica',
+        'stat-bakery': 'Bakery',
+        'story-subtitle': 'Identity & Roots',
+        'story-title': 'From Mine & Field to Cup',
+        'story-p1': '<strong>Ookini</strong> was born in the heart of <strong>Paz de Río, Boyacá</strong>, a legendary territory where the strength of iron & coal mining meets the rich fertility of high-mountain agriculture.',
+        'story-p2': 'Our name evokes gratitude and respect ("Ookini" - *thank you very much*). We honor local mineral workers and coffee growers by carefully selecting single-origin specialty beans roasted with forged-metal precision.',
+        'story-quote': '"We pair the robust character of our industrial heritage with the subtle refinement of fine bakery."',
+        'pillar1-title': 'Mining Heritage',
+        'pillar1-desc': 'Industrial character, strength, and local pride.',
+        'pillar2-title': 'Fertile Farming',
+        'pillar2-desc': 'Mineral-rich soils at high altitude.',
+        'pillar3-title': 'Artisanal Bakery',
+        'pillar3-desc': 'Baked fresh daily using regional ingredients.',
+        'menu-subtitle': 'Specialty Selection',
+        'menu-title': 'Menu & Prices',
+        'filter-all': 'All',
+        'filter-coffee': 'Specialty Coffee',
+        'filter-pastry': 'Pastry & Bakery',
+        'filter-beans': 'Coffee Beans',
+        'loc-subtitle': 'Visit Us',
+        'loc-title': 'Location & Hours',
+        'loc-address-title': 'Address',
+        'loc-address-detail': 'Downtown Area / Paz de Río, Boyacá',
+        'loc-hours-title': 'Opening Hours',
+        'loc-contact-title': 'Direct Contact',
+        'social-title': 'Follow Us on Social Media',
+        'map-prompt': 'Visit our industrial-designed coffee bar in the town center.',
+        'cart-title': 'Your Online Order',
+        'cart-notes-label': 'Notes / Table or Address',
+        'cart-total': 'Total:',
+        'cart-btn-whatsapp': 'Send Order via WhatsApp',
+        'footer-location': 'Paz de Río, Boyacá - Colombia',
+        'add-to-cart': 'Add to Order'
+      }
+    };
+
+    function renderMenu() {
+      const container = document.getElementById('menu-grid');
+      container.innerHTML = '';
+
+      const filtered = currentCategory === 'all' 
+        ? menuData 
+        : menuData.filter(item => item.category === currentCategory);
+
+      filtered.forEach(item => {
+        const title = currentLang === 'es' ? item.nameEs : item.nameEn;
+        const desc = currentLang === 'es' ? item.descEs : item.descEn;
+        const btnText = i18n[currentLang]['add-to-cart'];
+
+        const card = document.createElement('div');
+        card.className = "bg-iron-900 border border-iron-700 rounded-lg overflow-hidden flex flex-col justify-between hover:border-rust-500 transition-all duration-300 group";
+        card.innerHTML = `
+          <div>
+            <div class="h-48 overflow-hidden relative">
+              <img src="${item.img}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 bg-iron-900/90 border border-rust-500 text-rust-500 font-mono text-xs font-bold px-2.5 py-1 rounded">
+                $${item.price.toLocaleString('es-CO')} COP
+              </span>
+            </div>
+            <div class="p-5">
+              <h4 class="text-white font-bold text-lg mb-2">${title}</h4>
+              <p class="text-iron-300 text-xs leading-relaxed mb-4">${desc}</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0">
+            <button onclick="addToCart('${item.id}')" class="w-full py-2.5 rounded bg-iron-800 hover:bg-rust-500 hover:text-iron-900 text-rust-500 border border-rust-500/50 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-plus"></i> ${btnText}
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = "cat-btn active px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border border-rust-500 bg-rust-500 text-iron-900 transition-all";
+        } else {
+          btn.className = "cat-btn px-4 py-2 rounded text-xs font-bold uppercase tracking-wider border border-iron-600 bg-iron-900 text-iron-300 hover:border-rust-500 transition-all";
+        }
+      });
+      renderMenu();
+    }
+
+    // --- Language Switcher ---
+    function toggleLanguage() {
+      currentLang = currentLang === 'es' ? 'en' : 'es';
+      document.getElementById('lang-text').innerText = currentLang === 'es' ? 'EN' : 'ES';
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[currentLang][key]) {
+          el.innerHTML = i18n[currentLang][key];
+        }
+      });
+
+      renderMenu();
+      renderCart();
+    }
+
+    // --- Cart Operations ---
+    function addToCart(itemId) {
+      const existing = cart.find(i => i.id === itemId);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ id: itemId, qty: 1 });
+      }
+      updateCartUI();
+    }
+
+    function changeQty(itemId, delta) {
+      const item = cart.find(i => i.id === itemId);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(i => i.id !== itemId);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const countEl = document.getElementById('cart-count');
+      const totalCount = cart.reduce((acc, curr) => acc + curr.qty, 0);
+      countEl.innerText = totalCount;
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items-list');
+      container.innerHTML = '';
+
+      let grandTotal = 0;
+
+      if (cart.length === 0) {
+        container.innerHTML = `<p class="text-iron-500 text-xs text-center py-8">Tu carrito está vacío.</p>`;
+      } else {
+        cart.forEach(c => {
+          const product = menuData.find(m => m.id === c.id);
+          const name = currentLang === 'es' ? product.nameEs : product.nameEn;
+          const lineTotal = product.price * c.qty;
+          grandTotal += lineTotal;
+
+          const row = document.createElement('div');
+          row.className = "flex items-center justify-between p-3 bg-iron-800 rounded border border-iron-700";
+          row.innerHTML = `
+            <div>
+              <h5 class="font-bold text-white text-sm">${name}</h5>
+              <span class="text-xs font-mono text-rust-500">$${product.price.toLocaleString('es-CO')} COP</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <button onclick="changeQty('${c.id}', -1)" class="w-6 h-6 rounded bg-iron-700 text-white font-bold flex items-center justify-center hover:bg-rust-500 hover:text-iron-900">-</button>
+              <span class="text-sm font-bold text-white font-mono">${c.qty}</span>
+              <button onclick="changeQty('${c.id}', 1)" class="w-6 h-6 rounded bg-iron-700 text-white font-bold flex items-center justify-center hover:bg-rust-500 hover:text-iron-900">+</button>
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      }
+
+      document.getElementById('cart-total-price').innerText = `$${grandTotal.toLocaleString('es-CO')} COP`;
+    }
+
+    function toggleCartModal() {
+      const modal = document.getElementById('cart-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    function toggleMobileNav() {
+      const nav = document.getElementById('mobile-nav');
+      nav.classList.toggle('hidden');
+    }
+
+    // --- WhatsApp Order Integration ---
+    function sendWhatsAppOrder() {
+      if (cart.length === 0) {
+        alert(currentLang === 'es' ? "Tu carrito está vacío." : "Your cart is empty.");
+        return;
+      }
+
+      const notes = document.getElementById('order-notes').value || 'Sin especificación';
+      let message = `*NUEVO PEDIDO - OOKINI CAFÉ*\n\n`;
+
+      let total = 0;
+      cart.forEach(c => {
+        const item = menuData.find(m => m.id === c.id);
+        const name = currentLang === 'es' ? item.nameEs : item.nameEn;
+        const line = item.price * c.qty;
+        total += line;
+        message += `• ${c.qty}x ${name} - $${line.toLocaleString('es-CO')} COP\n`;
+      });
+
+      message += `\n*TOTAL:* $${total.toLocaleString('es-CO')} COP\n`;
+      message += `*NOTAS / UBICACIÓN:* ${notes}\n\n`;
+      message += `_Enviado desde la web oficial de Ookini - Paz de Río_`;
+
+      const encoded = encodeURIComponent(message);
+      window.open(`https://wa.me/573120000000?text=${encoded}`, '_blank');
+    }
+
+    // --- Initialization ---
+    window.onload = function() {
+      renderMenu();
+      renderCart();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+body {
+    background: color #c4e8c6;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    color:black
+}
+ h1{
+    color: rgb(227, 138, 21);
+    font-size: 2.5rem;
+}
+header{
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #1a1a1a ;
+}
+nav a {
+    color: rgb(234, 69, 18);
+}
+main {
+    padding: 3rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.metodo-titulo {
+    font-size: 1.1;
+    letter-spacing: 0.5em;
+    margin-bottom: 0.25rem;
+    color: blue;
+}
+.precio {
+    font-weight: bold;
+    color: blue;
+}
+#contador-tazas {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #c4e8c6;
+}
+#boton-reservar {
+    display:  block;
+    margin-top: 1rem;
+    padding: 0.5rem 1.25rem;
+    background-color: #1a1a1a ;
+    color: #f2f2f2;
+    border: none;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 1rem;
+    cursor: pointer;
+    
+
+}
